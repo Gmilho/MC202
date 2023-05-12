@@ -6,7 +6,7 @@ struct pilha* novaPilha(int n){
  struct pilha *p = (struct pilha*)calloc(1, sizeof(struct pilha));
  p->tamanho = n;
  p->topo = -1;
- p->stack = (int*)malloc(n * sizeof(int));
+ p->stack = (int*)calloc(n, sizeof(int));
  return p;
 }
 
@@ -29,7 +29,7 @@ void Empilha(struct pilha *p, int elem){
 }
 
 int Desempilha(struct pilha *p){
- if(!PilhaEstaVazia(p)){ return p->stack[p->topo];}
+ if(!PilhaEstaVazia(p)){ int elm = p->stack[p->topo]; p->topo--; return elm;}
  return 0;
 }
 

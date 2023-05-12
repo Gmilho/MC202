@@ -1,4 +1,4 @@
-#ifndef PILHA H
+#ifndef PILHA_H
 #define PILHA_H
 
 #include <stdio.h>

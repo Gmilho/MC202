@@ -2,15 +2,15 @@
 #include<stdio.h>
 #include"Pilha.h"
 
-int Operacoes(struct plh *p, char *strInp, int tmInp);
+int Operacoes(struct pilha *p, char *strInp, int tmInp);
 int CharEhNumero(char c);
 
-int main(int argc, char argv[]){
+int main(int argc, char*argv[]){
     FILE *fp = fopen(argv[1], "r");
 
     int n;
     fscanf(fp, "%d", &n);
-    struct plh *n_pilha = novaPilha(n);
+    struct pilha *n_pilha = novaPilha(n);
     char strEntrada[n];
     for (int i = 0; i < n; i++){
         char buffer;
@@ -23,7 +23,7 @@ int main(int argc, char argv[]){
     return 0;
 }
 
-int Operacoes(struct plh *p, char *strInp, int tmInp){
+int Operacoes(struct pilha *p, char *strInp, int tmInp){
     for (int i = 0; i < tmInp; i++){
         if(CharEhNumero(strInp[i])){ Empilha(p, (strInp[i]-'0'));}
         else{
