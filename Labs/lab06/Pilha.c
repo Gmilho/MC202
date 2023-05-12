@@ -1,39 +1,95 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include"Pilha.h"
+#include "Pilha.h"
 
-struct pilha* novaPilha(int n){
- struct pilha *p = (struct pilha*)calloc(1, sizeof(struct pilha));
- p->tamanho = n;
- p->topo = -1;
- p->stack = (int*)calloc(n, sizeof(int));
- return p;
+Pilha *CriaPilha(int tam_max)
+{
+  Pilha *Q = (Pilha *)calloc(1,sizeof(Pilha));
+
+  Q->val      = (int *)calloc(tam_max,sizeof(int));
+  Q->qtde     = 0;
+  Q->tam_max = tam_max;
+  
+  return(Q);
 }
 
-int TamanhoPilha(struct pilha *p){
- return p->topo +1; 
+void DestroiPilha(Pilha **Q)
+{
+  Pilha *aux=*Q;
+
+  if (aux != NULL){
+    free(aux->val);
+    free(aux);
+    *Q = NULL;
+  }
 }
 
-int PilhaEstaVazia(struct pilha *p){
- return TamanhoPilha(p) == 0; 
+bool PilhaVazia(Pilha *Q)
+{
+  if (Q->qtde == 0)
+    return(true);
+  else
+    return(false);
 }
 
-int PilhaEstaCheia(struct pilha *p){
- return TamanhoPilha(p) == p->tamanho - 1;
+bool PilhaCheia(Pilha *Q)
+{
+  if (Q->qtde == Q->tam_max)
+    return(true);
+  else
+    return(false);
 }
 
-void Empilha(struct pilha *p, int elem){
-  if(PilhaEstaCheia(p)){ printf("Pilha cheia\n"); exit(0);}
-  p->topo += 1;
-  p->stack[p->topo] = elem;
+bool Empilha(Pilha *Q, int elem)
+{
+  if (PilhaCheia(Q)){
+    printf("Aviso: Pilha cheia\n");
+    return(false);
+  }
+  
+  Q->val[Q->qtde]=elem; 
+  Q->qtde++;
+  return(true);
 }
 
-int Desempilha(struct pilha *p){
- if(!PilhaEstaVazia(p)){ int elm = p->stack[p->topo]; p->topo--; return elm;}
- return 0;
+bool Desempilha(Pilha *Q, int *elem)
+{
+  if (PilhaVazia(Q)){
+    printf("Aviso: Pilha vazia\n");
+    return(false);
+  } 
+  
+  *elem = Q->val[Q->qtde-1]; // topo = Q->qtde-1  
+  Q->qtde--;
+  return(true);
 }
 
-int RetornaElemAntTopo(struct pilha *p){
- if(!PilhaEstaVazia(p)){ return p->stack[p->topo - 1];}
- return 0;
+void ImprimePilha(Pilha *Q)
+{
+  if (PilhaVazia(Q)){
+    printf("Aviso: Pilha vazia\n");
+    return;
+  } 
+
+  for (int i=Q->qtde-1; i >= 0; i--) 
+    {
+      printf("%d ",Q->val[i]);
+    }
+  printf("\n");
+}
+
+bool ConsultaPilha(Pilha *Q, int elem, int *ndes)
+{
+  if (PilhaVazia(Q)){
+    printf("Aviso: Pilha vazia\n");
+    return(false);
+  } 
+
+  for (int i=Q->qtde-1,j=0; i >= 0; i--,j++) 
+    {
+      if (Q->val[i]==elem){
+	*ndes = j;
+	return(true);
+      }
+    }
+  printf("Aviso: elemento não encontrado\n");
+  return(false);
 }

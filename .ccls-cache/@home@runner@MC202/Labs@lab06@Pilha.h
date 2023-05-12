@@ -1,21 +1,26 @@
-#ifndef PILHA_H
-#define PILHA_H
+#ifndef _PILHA_H_
+#define _PILHA_H_
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <malloc.h>
+#include <stdbool.h>
 
-typedef struct pilha{
- int tamanho;
- int topo;
- int *stack;
-}plh;
+/* Pilha em vetor (não tem sentido ser circular) */
 
-struct pilha* novaPilha(int n);
-int TamanhoPilha(struct pilha *p);
-int PilhaEstaVazia(struct pilha *p);
-int PilhaEstaCheia(struct pilha *p);
-void Empilha(struct pilha *p, int elem);
-int Desempilha(struct pilha *p);
-int RetornaElemAntTopo(struct pilha *p);
+typedef struct _pilha {
+  int   qtde;     // número de elementos na pilha
+  int   tam_max;  // tamanho máximo da pilha
+  int  *val;      // vetor dos valores
+} Pilha;
+
+Pilha *CriaPilha(int tam_max);
+void   DestroiPilha(Pilha **Q);
+bool   PilhaVazia(Pilha *Q);
+bool   PilhaCheia(Pilha *Q);
+bool   Empilha(Pilha *Q, int elem);                 /* push: insere na pilha (última posicao) */
+bool   Desempilha(Pilha *Q, int *elem);             /* pop: remove da pilha (última posicao) */
+bool   ConsultaPilha(Pilha *Q, int elem, int *ndes); /* busca o elemento e retorna o número de desempilhamentos que faltam para ele sair da pilha */
+void   ImprimePilha(Pilha *Q);
 
 #endif
