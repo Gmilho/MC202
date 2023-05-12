@@ -25,7 +25,14 @@ int main(int argc, char **argv){
       i++;
     }
   
-    printf("%d", Operacoes(n_pilha, strEntrada, n));
+    Operacoes(n_pilha, strEntrada, n);
+  
+    int res = 0;
+    for (int i = 0; i < n; i++){
+      res += n_pilha->val[i];  
+    }
+  
+    printf("%d", res);
 
     return 0;
 }
@@ -36,12 +43,12 @@ int Operacoes(Pilha *p, char *strInp, int tmInp){
         int elem;
         if((int)strInp[i] == 43){
             if (p->qtde >= 1){
-                elem = p->val[p->qtde] + p->val[p->qtde - 1];
+                elem = p->val[p->qtde-1] + p->val[p->qtde - 2];
                 Empilha(p, elem);
             }
         }
         if((int)strInp[i] == 68){
-            Desempilha(p, &elem);
+            elem = p->val[p->qtde-1];
             Empilha(p, elem * 2);
         }
         if((int)strInp[i] == 67){
