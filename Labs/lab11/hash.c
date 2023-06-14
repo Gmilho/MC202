@@ -14,7 +14,8 @@ typedef struct _HashTable{
 
 hash *CriaTabelaHash(int size);
 int criaChave(char *nome);
-void executaHashing(hash *HashTable, int chave);
+void insereHash(hash *HashTable, char *nome);
+void insereNoFinal(hash *hashTable, int hashId, int hashVal);
 int executaBuscaHash(hash *HashTable, char *nome);
 
 int main(int argc, char **argv){
@@ -23,10 +24,11 @@ int main(int argc, char **argv){
   fscanf(fp, "%d", &n);
   hash *HashT = CriaTabelaHash(n);
   for (int i = 0; i < n; i++){
-    char *nomeH;
-    fgets(nomeH, 51, fp);
-    int chave = criaChave(nomeH);
-    executaHashing(HashT, chave);
+    char nomeH[51];
+    if(fgets(nomeH, sizeof(nomeH), fp)!=NULL){
+      nomeH[strlen(nomeH) - 1] = '\0';
+    }
+    insereHash(HashT, nomeH);
   }
   printf("%d", executaBuscaHash(HashT, argv[2]));
 }
@@ -48,25 +50,39 @@ int criaChave(char *nome){
   return chave;
 }
 
-void executaHashing(hash *HashTable, int chave){
-  int indice = (chave % 100);
-  HashTable->listaHash[indice].valor = chave;
+void insereHash(hash *HashTable, char *nome){
+  int chave = criaChave(nome);
+  chave = abs(chave); //caso a potência da função ser maior 2^31, a chave vira negativa
+  int hashId = (chave % HashTable->size);
+  insereNoFinal(HashTable, hashId, chave);
 }
 
-int BuscaLista(lista *listaAux, int hashId){
-  if (listaAux->valor == hashId){
-   return 1; 
+void insereNoFinal(hash *hashTable, int hashId, int hashVal){
+  lista *aux = (lista*)calloc(1, sizeof(lista));
+  lista *ultimo = &hashTable->listaHash[hashId];
+  aux->valor = hashVal;
+  aux->prox = NULL;
+  if (&hashTable->listaHash[hashId] == NULL){
+    hashTable->listaHash[hashId] = *aux;
+    return;
   }
-  else BuscaLista(listaAux->prox, hashId);
-  return 0;
+  while (ultimo->prox != NULL){
+    ultimo = ultimo->prox;
+  }
+  ultimo->prox = aux;
 }
 
 int executaBuscaHash(hash *HashTable, char *nome){
   int chave = criaChave(nome);
-  int hashId;
-  for (int i = 0; i < HashTable->size; i++){
-    if (BuscaLista(&HashTable->listaHash[i], hashId)){
-      return 1;
+  chave = abs(chave);
+  int hashId = (chave % HashTable->size);
+  lista *atual = HashTable->listaHash[hashId].prox;
+  if (HashTable->listaHash[hashId].valor == chave){
+    return 1;
+  } else {
+    while (atual != NULL){
+      if (atual->valor == chave) return 1;
+      else atual = atual->prox;
     }
   }
   return 0;
