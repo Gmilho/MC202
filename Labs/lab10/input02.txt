@@ -1,0 +1,11 @@
+10
+I Spock 5
+I Harry 10
+I Zorro 1
+P
+M Zorro 15
+P
+L
+D
+P
+L

@@ -1,0 +1,6 @@
+[Harry 10 ... Zorro 1]
+[Zorro 15 ... Spock 5]
+Mesa liberada para Sr(a) Zorro.
+Sr(a) Spock desistiu de esperar e foi embora.
+[Harry 10 ... Harry 10]
+Mesa liberada para Sr(a) Harry.
