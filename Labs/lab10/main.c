@@ -12,7 +12,7 @@ int main(int argc, char **argv){
     return (-1);
   }
   int n;
-  if(!fscanf(fp, "%d", &n)){
+  if(!fscanf(fp, "%d\n", &n)){
     return 0;
   }
   FilaP *filaDePrioridade = (FilaP*)calloc(1, sizeof(FilaP));
@@ -20,15 +20,14 @@ int main(int argc, char **argv){
   filaDePrioridade->heapMin = CriaHeap(FILA_MAX);
   filaDePrioridade->nelems = 0;
   filaDePrioridade->maxsize = FILA_MAX;
-  
+
+  char *strComando = (char*)calloc(26, sizeof(char));
   for (int i=0; i<n; i++){
-    char *strComando;
-    if(fgets(strComando, 25, fp)){
-      strComando[strlen(strComando) - 1] = '\0';
+    if(fgets(strComando, 26, fp)){
+      strComando[strcspn(strComando, "\n")] = '\0';
     }
     ExecutaComando(strComando, filaDePrioridade);
   }
-
   fclose(fp);
   return 0;
 }
@@ -37,7 +36,7 @@ void ExecutaComando(char *strCMD, FilaP *filaDePrioridades){
   char cmd = strCMD[0];
   int prioridadeC;
   char nomeCliente[21];
-  
+
   if (cmd == 'I'){
       int i = 2, j = 0;
       while (strCMD[i] != ' '){
@@ -48,12 +47,20 @@ void ExecutaComando(char *strCMD, FilaP *filaDePrioridades){
       do{
         i++;
       }while(!ehNum(strCMD[i]));
-      prioridadeC = strCMD[i] - '0';
+
+      prioridadeC = 0;
+      while(strCMD[i] != '\0'){
+        prioridadeC = prioridadeC * 10 + (strCMD[i] - '0');
+        i++;
+      }
     
       InsereNoHeap(filaDePrioridades->heapMax, nomeCliente, prioridadeC);
+    
       transformaMaximo(filaDePrioridades->heapMax, 0);
+    
       InsereNoHeap(filaDePrioridades->heapMin, nomeCliente, prioridadeC);
-      transformaMinimo(filaDePrioridades->heapMax, 0);
+
+      transformaMinimo(filaDePrioridades->heapMin, 0);
   }
   
   if (cmd == 'P'){
@@ -80,7 +87,12 @@ void ExecutaComando(char *strCMD, FilaP *filaDePrioridades){
     do{
       i++;
     }while(!ehNum(strCMD[i]));
-    prioridadeC = strCMD[i] - '0';
+
+    prioridadeC = 0;
+    while(strCMD[i] != '\0'){
+      prioridadeC = prioridadeC * 10 + (strCMD[i] - '0');
+      i++;
+    }
 
     /*for (int x = 0; x < H->maxsize; x++){
       if (H->heap[x].sobrenome == nomeCliente){

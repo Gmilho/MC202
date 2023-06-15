@@ -75,7 +75,7 @@ void Troca(Clientes *x, Clientes *y){
 }
 
 int ehNum(char c){
-  if (c-'0' > 47 && c-'0' < 58){
+  if (c-'0' >= 0 && c-'0' <= 9){
     return 1;
   }
   return 0;
