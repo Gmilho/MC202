@@ -1,13 +1,19 @@
 #include "FilaPrioridade.h"
 
-//TODO alterar funcao retorna para nao retirar da fila
-
 Heap *CriaHeap(int maxsize){
   Heap *aux = (Heap*)malloc(sizeof(Heap));
   aux->maxsize = maxsize;
   aux->nelems = 0;
   aux->heap = (Clientes*)calloc(maxsize, sizeof(Clientes));
   return aux;
+}
+
+void removeCliente(Heap *H){
+  Clientes *aux = (Clientes*)calloc(1, sizeof(Clientes));
+  aux = &H->heap[0];
+  H->heap[0] = H->heap[1];
+  H->nelems--;
+  free(aux);
 }
 
 int HeapCheio(Heap *H)
@@ -34,14 +40,6 @@ void InsereNoHeap(Heap *H, char *nomeCliente, int prioridadeC){
   int i = H->nelems;
   H->heap[i] = aux;
   H->nelems++;
-  while (i != 0 && H->heap[i].prioridade < H->heap[Pai(i)].prioridade){
-    Troca(&H->heap[i], &H->heap[Pai(i)]);
-    i = Pai(i);
-  }
-  while (i != 0 && H->heap[i].prioridade > H->heap[Pai(i)].prioridade){
-    Troca(&H->heap[i], &H->heap[Pai(i)]);
-    i = Pai(i);
-  }
 }
 
 void transformaMinimo(Heap *H, int indice){
@@ -66,32 +64,6 @@ void transformaMaximo(Heap *H, int indice){
     Troca(&H->heap[indice], &H->heap[maior]);
     transformaMaximo(H, maior);
   }
-}
-
-Clientes retornaUltimoCliente(Heap *H){
-  if (HeapVazio(H) == 1){
-    Clientes dummyCliente;
-    dummyCliente.prioridade = -1;
-    return dummyCliente;
-  }
-  transformaMinimo(H, 0);
-  Clientes ultCliente = H->heap[0];
-  H->heap[0] = H->heap[H->nelems - 1];
-  H->nelems--;
-  return ultCliente;
-}
-
-Clientes retornaPrimCliente(Heap *H){
-  if (HeapVazio(H) == 1){
-    Clientes dummyCliente;
-    dummyCliente.prioridade = -1;
-    return dummyCliente;
-  }
-  transformaMaximo(H, 0);
-  Clientes primCliente = H->heap[0];
-  H->heap[0] = H->heap[H->nelems - 1];
-  H->nelems--;
-  return primCliente;
 }
 
 void Troca(Clientes *x, Clientes *y){

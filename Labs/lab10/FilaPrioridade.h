@@ -14,6 +14,7 @@
 typedef struct _Clientes{
   int prioridade;
   char *sobrenome;
+  int idxMax, idxMin;
 } Clientes;
 
 typedef struct _heap{
@@ -28,12 +29,11 @@ typedef struct _FilaDePrioridades{
 
 Heap     *CriaHeap(int maxsize);
 void     InsereNoHeap(Heap *H, char *nomeCliente, int prioridadeC);
+void     removeCliente(Heap *H);
 int      HeapCheio(Heap *H);
 int      HeapVazio(Heap *H);
 void     transformaMinimo(Heap *H, int indice);
 void     transformaMaximo(Heap *H, int indice);
-Clientes retornaUltimoCliente(Heap *H);
-Clientes retornaPrimCliente(Heap *H);
 void     Troca(Clientes *x, Clientes *y);
 int      ehNum(char c);
 

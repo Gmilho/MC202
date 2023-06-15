@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "FilaPrioridade.c"
+#define FILA_MAX 100
 
 void ExecutaComando(char *strCMD, FilaP *filaDePrioridades);
 
@@ -10,15 +11,17 @@ int main(int argc, char **argv){
   int n;
   fscanf(fp, "%d", &n);
   FilaP *filaDePrioridade = (FilaP*)calloc(1, sizeof(FilaP));
-  filaDePrioridade->heapMax = CriaHeap(100);
-  filaDePrioridade->heapMin = CriaHeap(100);
+  filaDePrioridade->heapMax = CriaHeap(FILA_MAX);
+  filaDePrioridade->heapMin = CriaHeap(FILA_MAX);
   filaDePrioridade->nelems = 0;
-  filaDePrioridade->maxsize = 100;
+  filaDePrioridade->maxsize = FILA_MAX;
   
   for (int i=0; i<n; i++){
     char *strComando;
-    fgets(strComando, 25, fp);
-    //executa_comando(cmd, FilaP)
+    if(fgets(strComando, 25, fp)){
+      strComando[strlen(strComando) - 1] = '\0';
+    }
+    ExecutaComando(strComando, filaDePrioridade);
   }
 
   fclose(fp);
@@ -54,10 +57,12 @@ void ExecutaComando(char *strCMD, FilaP *filaDePrioridades){
   
   if (cmd == 'L'){
     printf("Mesa liberada para Sr(a) %s.\n", filaDePrioridades->heapMax->heap[0].sobrenome);
+    removeCliente(filaDePrioridades->heapMax);
   }
   
   if (cmd == 'D'){
     printf("Sr(a) %s desistiu de esperar e foi embora.\n", filaDePrioridades->heapMin->heap[0].sobrenome);
+    removeCliente(filaDePrioridades->heapMin);
   }
   
   if (cmd == 'M'){
