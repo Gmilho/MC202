@@ -7,9 +7,14 @@ void ExecutaComando(char *strCMD, FilaP *filaDePrioridades);
 
 int main(int argc, char **argv){
   FILE *fp = fopen(argv[1], "r");
-  
+  if (fp == NULL){
+    perror("Erro de leitura: ");
+    return (-1);
+  }
   int n;
-  fscanf(fp, "%d", &n);
+  if(!fscanf(fp, "%d", &n)){
+    return 0;
+  }
   FilaP *filaDePrioridade = (FilaP*)calloc(1, sizeof(FilaP));
   filaDePrioridade->heapMax = CriaHeap(FILA_MAX);
   filaDePrioridade->heapMin = CriaHeap(FILA_MAX);

@@ -8,10 +8,16 @@ void extraiInteiros(const char* str, int* array, int* count);
 
 int main(int argc, char **argv){
   FILE *fp = fopen(argv[1], "r");
+  if (fp == NULL){
+    perror("Erro de leitura: ");
+    return (-1);
+  }
   
   int n, contaSim, contaPos;
   
-  fscanf(fp, "%d", &n);
+  if(!fscanf(fp, "%d", &n)){
+    return 0;
+  }
   
   int vetorSim[n], vetorPos[n];
   char strSimIN[256], strPosIN[256], strDummy[32];
