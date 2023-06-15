@@ -10,8 +10,10 @@ Heap *CriaHeap(int maxsize){
 
 void removeCliente(Heap *H){
   Clientes *aux = (Clientes*)calloc(1, sizeof(Clientes));
-  aux = &H->heap[0];
-  H->heap[0] = H->heap[1];
+  *aux = H->heap[0];
+  for (int i = 0; i < H->nelems; i++){
+   H->heap[i] = H->heap[i+1];  
+  }
   H->nelems--;
   free(aux);
 }
