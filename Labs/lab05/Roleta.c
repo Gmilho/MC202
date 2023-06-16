@@ -20,6 +20,7 @@ int main(int argc, char **argv){
     if(!fscanf(fp, "%d", &n)){
       return 0;
     }
+  
     char *strEntrada = (char *)calloc(n+1, sizeof(char));
     Pilha *n_pilha = CriaPilha(n);
 
@@ -68,7 +69,7 @@ int Operacoes(Pilha *p, char *strInp, int tmInp){
 }
 
 int CharEhNumero(char c){
-    if ((int)c <= 57 && (int)c >= 48){
+    if (c-'0' <= 9 && c-'0' >= 0){
         return 1;
     }
     return 0;
