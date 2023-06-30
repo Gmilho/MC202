@@ -7,15 +7,14 @@ typedef struct NoLista{
     struct NoLista *prox;
 }No, ListaLigada;
 
-void Troca(No *a, No *b);
-void OrdenaExpoente(No *NoCabeca);
-void CalculaDerivada(No *NoCabeca);
-No  *InsereNaLista(No *NoCabeca, int F_base, int F_expoente);
-void ImprimeLista(No *NoCabeca);
-void RemoveFinalDaLista(No *NoFinalLista);
-void RemoveInicioDaLista(No *NoIniLista);
+void   Troca(No *a, No *b);
+void   OrdenaExpoente(No *NoCabeca);
+void   CalculaDerivada(No *NoCabeca);
+No     *InsereNaLista(No *NoCabeca, int F_base, int F_expoente);
+void   ImprimeLista(No *NoCabeca);
+void   DestroiLista(No *NoCabeca);
 double pot(double X, int potencia);
-void ImprimeResultadoX(No *NoCabeca, float x);
+void   ImprimeResultadoX(No *NoCabeca, float x);
 
 int main(int argc, char **argv){
   int nNos;
@@ -39,9 +38,12 @@ int main(int argc, char **argv){
     }
     NoCabeca = InsereNaLista(NoCabeca, F_base, F_expoente);
   }
+  fclose(fp);
 
   OrdenaExpoente(NoCabeca);
   ImprimeResultadoX(NoCabeca, x);
+
+  DestroiLista(NoCabeca);
     
   return 0;
 }
@@ -57,17 +59,17 @@ void Troca(No *a, No *b){
   b->expoente = t_expo;
 }
 
-No *InsereNaLista(struct NoLista *NoCabeca, int F_base, int F_expoente){
-    No *p = (No*)calloc(1, sizeof(No));
-    p->base = F_base;
-    p->expoente = F_expoente;
-    p->prox = NULL;
-    if (NoCabeca == NULL){
-      NoCabeca = p;
-    } else {
-      p->prox = NoCabeca;
-      NoCabeca = p;
-    }
+No *InsereNaLista(No *NoCabeca, int F_base, int F_expoente){
+  No *p = (No*)calloc(1, sizeof(No));
+  p->base = F_base;
+  p->expoente = F_expoente;
+  p->prox = NULL;
+  if (NoCabeca == NULL){
+    NoCabeca = p;
+  } else {
+    p->prox = NoCabeca;
+    NoCabeca = p;
+  }
   return NoCabeca;
 }
 
@@ -90,11 +92,10 @@ void OrdenaExpoente(No *NoCabeca){
       }
       aux = aux->prox;
     }
-  } while(trocado);
-  
+  } while(trocado); 
 }
 
-void CalculaDerivada(struct NoLista *NoCabeca){
+void CalculaDerivada(No *NoCabeca){
   if (NoCabeca == NULL){ return;}
   CalculaDerivada(NoCabeca->prox);
   if(NoCabeca != NULL){
@@ -104,10 +105,10 @@ void CalculaDerivada(struct NoLista *NoCabeca){
   }
 }
 
-void ImprimeLista(struct NoLista *NoCabeca){
+void ImprimeLista(No *NoCabeca){
   if(NoCabeca == NULL){ return;}
   ImprimeLista(NoCabeca->prox);
-  if (NoCabeca->base == 0){ exit(0);}
+  if (NoCabeca->base == 0){ return;}
   if(NoCabeca->base < 0){
     printf("- %.2fx^%d ", (double)NoCabeca->base * (-1), NoCabeca->expoente);
   } else {
@@ -115,22 +116,13 @@ void ImprimeLista(struct NoLista *NoCabeca){
   }
 }
 
-void RemoveFinalDaLista(No *NoFinalLista){
-  No *ant = NULL;
-  No *aux = NoFinalLista;
-  if (aux == NULL){ return;}
-  while (aux->prox != NULL){
-    ant = aux;
-    aux = aux->prox;
+void DestroiLista(No *NoCabeca){
+  No *aux;
+  while (NoCabeca != NULL){
+    aux = NoCabeca;
+    NoCabeca = NoCabeca->prox;
+    free(aux);
   }
-  ant->prox = NULL;
-  free(aux);
-}
-
-void RemoveInicioDaLista(No *NoIniLista){
-  No *aux = NoIniLista;
-  NoIniLista = NoIniLista->prox;
-  free(aux);
 }
 
 double pot(double X, int potencia) {

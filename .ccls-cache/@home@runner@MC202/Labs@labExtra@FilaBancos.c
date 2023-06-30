@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define MAX_VETOR 100
 
-float *CriaVetorFloat(int n);
-void  DestroiVetorFloat(float **v);
-void  ImprimeVetorFloatEmInt(float *v, int n);
+int   *CriaVetor(int n);
+void  ImprimeVetor(int *v, int n);
 int   **CriaMatrizInt(int nlin, int ncol);
 void  ImprimeMatrizInt(int **m, int nlin, int ncol);
-void  DestroiMatrizInt(int ***m, int nlin);
-void  mergeSortFloat(float *v, int tam);
-void  junta(float *v, float *esq, float *dir, int tamEsq, int tamDir);
+void  DestroiMatrizInt(int **m, int nlin);
+void  mergeSort(int *v, int tam);
+void  junta(int *v, int *esq, int *dir, int tamEsq, int tamDir);
 
 int main(int argc, char **argv){
   FILE *fp = fopen(argv[1], "r");
@@ -23,106 +23,92 @@ int main(int argc, char **argv){
   }
   if (n == 0){ printf("\n"); return 0;}
 
-  int **arr = CriaMatrizInt(100, 100);
+  int **arr = (int**)calloc(MAX_VETOR, sizeof(int*));
+  for (int i = 0; i < MAX_VETOR; i++){
+    arr[i] = (int*)calloc(MAX_VETOR, sizeof(int));
+  }
   
   for (int i = 0; i < n; i++) {
     int k;
-    fscanf(fp, "%d", &k);
+    if (!fscanf(fp, "%d", &k)){
+      return 1;
+    }
     if (n == 1){ 
       int x; 
-      fscanf(fp, "%d", &x); 
+      if (!fscanf(fp, "%d", &x)){
+        return 1;
+      }
       printf("%d\n", x); 
       return 0;
     }
     for (int j = 0; j < k; j++){
-      fscanf(fp, "%d", &arr[i][j]);
+      if (!fscanf(fp, "%d", &arr[i][j])){
+        return 1;
+      }
     }
   }
+  fclose(fp);
 
-  float *vetor = CriaVetorFloat(n*100);
-  int indice;
+  int *vetor = CriaVetor(n * MAX_VETOR);
+  int indice = 0;
   for (int i = 0; i < n; i++){
-    for (int j = 0; j < 100; j++){
+    for (int j = 0; j < MAX_VETOR; j++){
       vetor[indice] = arr[i][j];
       indice++;
     }
   }
-
-  mergeSortFloat(vetor, n*100);
-  ImprimeVetorFloatEmInt(vetor, n*100);
-  DestroiMatrizInt(&arr, n);
-  DestroiVetorFloat(&vetor);
+  for (int i = 0; i < MAX_VETOR; i++){
+    free(arr[i]);
+  }
+  free(arr);
+  
+  mergeSort(vetor, n * MAX_VETOR);
+  ImprimeVetor(vetor, n * MAX_VETOR);
+  free(vetor);
+  
   return 0;
 }
 
-float *CriaVetorFloat(int n)
+int *CriaVetor(int n)
 {
-  float *v = (float *)calloc(n,sizeof(float));
+  int *v = (int *)calloc(n,sizeof(int));
   return(v);
 }
 
-void DestroiVetorFloat(float **v)
-{
-  if ((*v) != NULL){
-    free(*v);
-    *v = NULL;
-  }
-}
-
-void ImprimeVetorFloatEmInt(float *v, int n)
+void ImprimeVetor(int *v, int n)
 {
   for(int i=0; i < n; i++)
     if(v[i] == 0){ i++;}
-    else { printf("%d ",(int)v[i]);}
+    else { printf("%d ", v[i]);}
   printf("\n");
-}
-
-int **CriaMatrizInt(int nlin, int ncol)
-{
-  int **m = (int **)calloc(nlin,sizeof(int *));
-  
-  for (int l=0; l < nlin; l++)
-    m[l] = (int *)calloc(ncol,sizeof(int));
-  return(m);
 }
 
 void ImprimeMatrizInt(int **m, int nlin, int ncol)
 {
-  for(int l=0; l < nlin; l++){
-    for(int c=0; c < ncol; c++)
-      printf("%03d ",m[l][c]);
+  for (int l = 0; l < nlin; l++){
+    for (int c = 0; c < ncol; c++)
+      printf("%d ", m[l][c]);
     printf("\n");
   }
 }
 
-void DestroiMatrizInt(int ***m, int nlin)
-{
-  if ((*m) != NULL){
-    for (int l=0; l < nlin; l++)
-      free((*m)[l]);
-    free(*m);
-    *m = NULL;
-  }
-}
-
-void mergeSortFloat(float *v, int tam){
+void mergeSort(int *v, int tam){
   if (tam < 2){ return;}
-  int meio = tam/2;
-  float *esq = (float*)malloc(meio * sizeof(float));
-  float *dir = (float*)malloc((tam - meio) * sizeof(float));
-  for (int i = 0; i < meio; i++){
+  int x = tam/2, y = tam - x;
+  int esq[x], dir[y];
+  for (int i = 0; i < x; i++){
     esq[i] = v[i];
   }
-  for (int i = meio; i < tam; i++){
-    dir[i - meio] = v[i];
+  for (int i = x; i < tam; i++){
+    dir[i - x] = v[i];
   }
-  mergeSortFloat(esq, meio);
-  mergeSortFloat(dir, tam - meio);
+  mergeSort(esq, x);
+  mergeSort(dir, y);
 
-  junta(v, esq, dir, meio, tam - meio);
+  junta(v, esq, dir, x, y);
 }
 
-void junta(float *v, float *esq, float *dir, int tamEsq, int tamDir){
+void junta(int *v, int *esq, int *dir, int tamEsq, int tamDir){
   int i = 0, j = 0, k = 0;
   while (i < tamEsq && j < tamDir) {
     if (esq[i] <= dir[j]) {

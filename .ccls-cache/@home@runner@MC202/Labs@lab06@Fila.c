@@ -121,16 +121,16 @@ void LeArquivo(char *arq, int *dias, int *atraso, int *esquece){
 
 /* Função solução */
 int Solucao(Fila *Q, int dias, int atraso, int esquece){
-  int diaAtual = 1;
   InsereFila(Q, 1);
-  for (int i = 0; i < dias; i++){
-    if (diaAtual >= esquece){
-      RemoveFila(Q);
+  for (int i = 1; i < dias+1; i++){
+    for (int j = Q->ini; j < Q->qtde; j++){
+      if (i - Q->val[j] >= esquece){
+        RemoveFila(Q);
+      }
+      else if(i - Q->val[j] >= atraso){
+        InsereFila(Q, i);
+      }
     }
-    if(diaAtual >= atraso){
-      InsereFila(Q, 1);
-    }
-    diaAtual++;
   }
   return Q->qtde;
 }

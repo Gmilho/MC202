@@ -10,30 +10,29 @@
 #define Pai(i) ((i-1)/2)
 #define FilhoEsquerdo(i) (2*i+1)
 #define FilhoDireito(i) (2*i+2)
+#define HEAP_MAX 100
 
 typedef struct _Clientes{
   int prioridade;
-  char *sobrenome;
-  int idxMax, idxMin;
+  char sobrenome[20];
 } Clientes;
 
-typedef struct _heap{
-  int maxsize, nelems;
-  Clientes *heap;
+typedef struct _FilaDePrioridades{
+  Clientes heapMin[HEAP_MAX];
+  Clientes heapMax[HEAP_MAX];
+  int tamMinH, tamMaxH;
 } Heap;
 
-typedef struct _FilaDePrioridades{
-  Heap *heapMin, *heapMax;
-  int maxsize, nelems;
-} FilaP;
-
-Heap     *CriaHeap(int maxsize);
 void     InsereNoHeap(Heap *H, char *nomeCliente, int prioridadeC);
-void     removeCliente(Heap *H);
+void     atualizaPrioridade(Heap *H, char *nomeCliente, int prioridadeC);
+void     removeClienteMax(Heap *H, char *nomeCliente);
+void     removeClienteMin(Heap *H, char *nomeCliente);
+int      retornaIdxMaxHeap(Heap *H);
+int      retornaIdxMinHeap(Heap *H);
 int      HeapCheio(Heap *H);
 int      HeapVazio(Heap *H);
-void     transformaMinimo(Heap *H, int indice);
-void     transformaMaximo(Heap *H, int indice);
+void     transformaMinimo(Clientes *C, int tamMin, int indice);
+void     transformaMaximo(Clientes *C, int tamMax, int indice);
 void     Troca(Clientes *x, Clientes *y);
 int      ehNum(char c);
 

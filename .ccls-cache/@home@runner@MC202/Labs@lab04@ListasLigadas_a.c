@@ -10,38 +10,39 @@ typedef struct NoLista{
 void Troca(No *a, No *b);
 void OrdenaExpoente(No *NoCabeca);
 void CalculaDerivada(No *NoCabeca);
-No  *InsereNaLista(struct NoLista *NoCabeca, int F_base, int F_expoente);
-void ImprimeLista(struct NoLista *NoCabeca);
-void RemoveFinalDaLista(No *NoFinalLista);
-void RemoveInicioDaLista(No *NoIniLista);
-
+No   *InsereNaLista(No *NoCabeca, int F_base, int F_expoente);
+void ImprimeLista(No *NoCabeca);
+void DestroiLista(No *NoCabeca);
 
 int main(int argc, char **argv){
-    int nNos;
-    FILE *fp = fopen(argv[1], "r");
-    if (fp == NULL){
-      perror("Erro de Leitura: ");
-      return (-1);
-    }
+  int nNos;
+  FILE *fp = fopen(argv[1], "r");
+  if (fp == NULL){
+    perror("Erro de Leitura: ");
+    return (-1);
+  }
   
-    if(!fscanf(fp, "%d", &nNos)){
-      return 0;
-    }
+  if(!fscanf(fp, "%d", &nNos)){
+    return 1;
+  }
 
-    No *NoCabeca = NULL;
-    for (int i = 0; i < nNos; i++){
-        int F_base, F_expoente;
-        if(!fscanf(fp, "%d %d", &F_base, &F_expoente)){
-          return 0;
-        }
-        NoCabeca = InsereNaLista(NoCabeca, F_base, F_expoente);
+  No *NoCabeca = NULL;
+  for (int i = 0; i < nNos; i++){
+    int F_base, F_expoente;
+    if(!fscanf(fp, "%d %d", &F_base, &F_expoente)){
+      return 1;
     }
+    NoCabeca = InsereNaLista(NoCabeca, F_base, F_expoente);
+  }
+  fclose(fp);
+  
+  OrdenaExpoente(NoCabeca);
+  CalculaDerivada(NoCabeca);
+  ImprimeLista(NoCabeca);
 
-    OrdenaExpoente(NoCabeca);
-    CalculaDerivada(NoCabeca);
-    ImprimeLista(NoCabeca);
-    
-    return 0;
+  DestroiLista(NoCabeca);
+  
+  return 0;
 }
 
 void Troca(No *a, No *b){
@@ -55,17 +56,17 @@ void Troca(No *a, No *b){
   b->expoente = t_expo;
 }
 
-No *InsereNaLista(struct NoLista *NoCabeca, int F_base, int F_expoente){
-    No *p = (No*)calloc(1, sizeof(No));
-    p->base = F_base;
-    p->expoente = F_expoente;
-    p->prox = NULL;
-    if (NoCabeca == NULL){
-      NoCabeca = p;
-    } else {
-      p->prox = NoCabeca;
-      NoCabeca = p;
-    }
+No *InsereNaLista(No *NoCabeca, int F_base, int F_expoente){
+  No *p = (No*)calloc(1, sizeof(No));
+  p->base = F_base;
+  p->expoente = F_expoente;
+  p->prox = NULL;
+  if (NoCabeca == NULL){
+    NoCabeca = p;
+  } else {
+    p->prox = NoCabeca;
+    NoCabeca = p;
+  }
   return NoCabeca;
 }
 
@@ -92,7 +93,7 @@ void OrdenaExpoente(No *NoCabeca){
   
 }
 
-void CalculaDerivada(struct NoLista *NoCabeca){
+void CalculaDerivada(No *NoCabeca){
   if (NoCabeca == NULL){ return;}
   CalculaDerivada(NoCabeca->prox);
   if(NoCabeca != NULL){
@@ -102,10 +103,10 @@ void CalculaDerivada(struct NoLista *NoCabeca){
   }
 }
 
-void ImprimeLista(struct NoLista *NoCabeca){
+void ImprimeLista(No *NoCabeca){
   if(NoCabeca == NULL){ return;}
   ImprimeLista(NoCabeca->prox);
-  if (NoCabeca->base == 0){ exit(0);}
+  if (NoCabeca->base == 0){ return;}
   if(NoCabeca->base < 0){
     printf("- %.2fx^%d ", (double)NoCabeca->base * (-1), NoCabeca->expoente);
   } else {
@@ -113,20 +114,11 @@ void ImprimeLista(struct NoLista *NoCabeca){
   }
 }
 
-void RemoveFinalDaLista(No *NoFinalLista){
-  No *ant = NULL;
-  No *aux = NoFinalLista;
-  if (aux == NULL){ return;}
-  while (aux->prox != NULL){
-    ant = aux;
-    aux = aux->prox;
+void DestroiLista(No *NoCabeca){
+  No *aux;
+  while (NoCabeca != NULL){
+    aux = NoCabeca;
+    NoCabeca = NoCabeca->prox;
+    free(aux);
   }
-  ant->prox = NULL;
-  free(aux);
-}
-
-void RemoveInicioDaLista(No *NoIniLista){
-  No *aux = NoIniLista;
-  NoIniLista = NoIniLista->prox;
-  free(aux);
 }

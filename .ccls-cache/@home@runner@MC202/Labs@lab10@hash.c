@@ -13,15 +13,18 @@ typedef struct _HashTable{
 } hash;
 
 hash *CriaTabelaHash(int size);
-int criaChave(char *nome);
+int  criaChave(char *nome);
 void insereHash(hash *HashTable, char *nome);
 void insereNoFinal(hash *hashTable, int hashId, int hashVal);
-int executaBuscaHash(hash *HashTable, char *nome);
+int  executaBuscaHash(hash *HashTable, char *nome);
 
 int main(int argc, char **argv){
   FILE *fp = fopen(argv[1], "r");
   int n;
-  fscanf(fp, "%d", &n);
+  if (!fscanf(fp, "%d", &n)){
+    perror("Erro de leitura: ");
+    return (-1);
+  }
   hash *HashT = CriaTabelaHash(n);
   for (int i = 0; i < n; i++){
     char nomeH[51];
@@ -30,7 +33,13 @@ int main(int argc, char **argv){
     }
     insereHash(HashT, nomeH);
   }
+  fclose(fp);
+
+  if (!argv[2]){ printf("0"); return 0;}
+  
   printf("%d", executaBuscaHash(HashT, argv[2]));
+  
+  return 0;
 }
 
 hash *CriaTabelaHash(int size){
